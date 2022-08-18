@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerscript : MonoBehaviour
 {
     public Transform max;
     public Transform min;
+    public AudioSource src;
     public float inc;
-    double speed = 0.1;
+
     void Start()
     {
-        
+        src = GetComponent<AudioSource>();
+
     }
 
     // Update is called once per frame
@@ -29,9 +32,18 @@ public class playerscript : MonoBehaviour
         {
             transform.position = new Vector3(Mathf.Clamp(transform.position.x - inc, min.position.x, max.position.x), transform.position.y, transform.position.z);
         }
-        else if(Input.GetKeyDown(KeyCode.W));
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
         {
-            transform.position += new Vector3(0, 0, 1*((float)speed));
+            SceneManager.LoadScene(0);
+            src.Play();
+            Invoke("Restart", 1f);
         }
+    }
+    void Restart()
+    {
+        SceneManager.LoadScene(0);
     }
 }
